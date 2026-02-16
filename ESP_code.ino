@@ -3,12 +3,17 @@
 #include <DHT.h>
 
 // ---------------- WIFI ----------------
-#define WIFI_SSID "PGS@IOT"
-#define WIFI_PASSWORD "presidential@IOT"
+// Fill in the WiFi credintials
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
 // ---------------- FIREBASE ----------------
-#define FIREBASE_HOST "https://ttx22p-default-rtdb.asia-southeast1.firebasedatabase.app/"
-#define FIREBASE_SECRET "Lxsxse8BbIRLeJB2zF780ahMNvxKj9rNwcEpV8Ap"
+// Fill in the credintials
+// FIREBASE_HOST "" requires database url
+// FIREBASE_SECRET "" reqiures Secret key
+
+#define FIREBASE_HOST ""
+#define FIREBASE_SECRET ""
 
 // ---------------- DHT11 ----------------
 #define DHTPIN D4        // GPIO2
