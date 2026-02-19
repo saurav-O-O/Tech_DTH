@@ -14,39 +14,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 🔹 your actual data path
 const sensorRef = ref(db, "sensor/staticTest");
-
-// Reference to the status element
 const statusEl = document.querySelector(".status");
+const tempEl = document.getElementById("temp");
+const humidityEl = document.getElementById("humidity");
+const lastUpdateEl = document.getElementById("lastUpdate");
 
-// How long to consider data "live" (in milliseconds)
-const LIVE_THRESHOLD = 10000; // 10 seconds
-
-let lastUpdateTime = 0;
+let lastUpdateValue = null;
 
 onValue(sensorRef, (snapshot) => {
   const data = snapshot.val();
 
   if (data) {
-    // Update values
-    document.getElementById("temp").textContent = `${data.temperature}°`;
-    document.getElementById("humidity").textContent = `${data.humidity}%`;
-    document.getElementById("lastUpdate").textContent = data.lastUpdate;
+    tempEl.textContent = `${data.temperature}°`;
+    humidityEl.textContent = `${data.humidity}%`;
+    lastUpdateEl.textContent = data.lastUpdate;
 
-    // Track last update timestamp
-    lastUpdateTime = Date.now();
-  }
-});
-
-// Check every second if data is still live
-setInterval(() => {
-  const now = Date.now();
-  if (now - lastUpdateTime > LIVE_THRESHOLD) {
-    statusEl.textContent = "OFFLINE";
-    statusEl.style.opacity = 0.5;
-  } else {
+    // store current lastUpdate value
+    lastUpdateValue = data.lastUpdate;
     statusEl.textContent = "LIVE";
     statusEl.style.opacity = 0.7;
   }
-}, 1000);
+});
+
+// check after 10 seconds if lastUpdate changed
+setInterval(() => {
+  if (!lastUpdateValue) return; // no data yet
+
+  // get latest snapshot once
+  import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js").then(({ getDatabase, ref, get }) => {
+    const db = getDatabase();
+    const sensorRef = ref(db, "sensor/staticTest");
+    get(sensorRef).then((snapshot) => {
+      const data = snapshot.val();
+      if (!data || data.lastUpdate === lastUpdateValue) {
+        // no change → offline
+        statusEl.textContent = "OFFLINE";
+        statusEl.style.opacity = 0.5;
+        tempEl.textContent = "--°";
+        humidityEl.textContent = "--%";
+        lastUpdateEl.textContent = "--";
+      } else {
+        // changed → still live
+        lastUpdateValue = data.lastUpdate;
+        statusEl.textContent = "LIVE";
+        statusEl.style.opacity = 0.7;
+      }
+    });
+  });
+}, 10000); // 10 sec
