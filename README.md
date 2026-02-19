@@ -9,7 +9,7 @@ A sleek, full-stack IoT solution that bridges physical sensor data with a modern
 
     🛠️ Robust Firmware: Implements non-blocking millis() timers to ensure the ESP8266 remains responsive during data transmission.
 
-    🎨 Sci-Fi Aesthetic: A "Cyberpunk" inspired dashboard featuring the Orbitron typeface and glowing UI elements.
+    🎨A modern dashboard featuring the Orbitron typeface and glowing UI elements.
 
     🤖 Automated Deployment: Integrated CI/CD pipeline via GitHub Actions that deploys updates to the web dashboard on every push.
 
